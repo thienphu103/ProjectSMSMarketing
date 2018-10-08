@@ -78,7 +78,7 @@ public class ListMessageActivity extends AppCompatActivity {
                 String users = user.getUserName();
                 String phone = user.getUserPhone();
                 String message=user.getUserMessage();
-               // sendSMSMessage(phone,message);
+                sendSMSMessage(phone,message);
                 sb = sb.append(" " +"Tên: "+users+" - Phone: "+phone+"\n");
             }
         }
