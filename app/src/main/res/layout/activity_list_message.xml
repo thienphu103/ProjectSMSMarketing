@@ -3,22 +3,31 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
-    tools:context=".MainActivity"
     android:orientation="vertical"
     android:gravity="fill_horizontal">
 
-
+    <ImageButton
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:text="Reset"
+        android:src="@drawable/ic_replay_black_24dp"
+        android:id="@+id/buttonReset"
+        android:background="@android:color/holo_blue_light"
+        android:layout_gravity="right" />
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginBottom="10dp"
         android:id="@+id/listView"
         android:layout_weight="1" />
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="50dp"
+        android:background="@android:color/holo_blue_light"
+        android:textColor="@android:color/white"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:text="Send"
-        android:id="@+id/button"
+        android:id="@+id/buttonSend"
         android:layout_gravity="center" />
+
 </LinearLayout>
