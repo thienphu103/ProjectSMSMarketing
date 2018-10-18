@@ -1,10 +1,7 @@
-package com.example.a.projectcompanyhdexpertiser.Class;
+package com.example.a.projectcompanyhdexpertiser.Controller;
 
 import android.content.Context;
 import android.util.Log;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -23,16 +20,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.example.a.projectcompanyhdexpertiser.APIConnect.APIConnect.LINK;
+import static com.example.a.projectcompanyhdexpertiser.APIConnect.APIConnection.HOST;
+import static com.example.a.projectcompanyhdexpertiser.APIConnect.APIConnection.PATH;
 
-public class MessageManager {
-
+public class MessageManagerSevice {
     public ArrayList<UserMessage> arrayList;
-    public ArrayAdapter<UserMessage> arrayAdapter;
+    public Context context;
+    public void setContext(Context context) {
+        this.context = context;
+    }
 
-    public void getData(final Context context, final ListView listView) {
+    public void getData() {
+        arrayList = new ArrayList<>();
         final RequestQueue requestQueue = Volley.newRequestQueue(context);
-        final StringRequest stringRequest = new StringRequest(Request.Method.GET, LINK + "message",
+        final StringRequest stringRequest = new StringRequest(Request.Method.GET, HOST + PATH + "message",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -61,23 +62,20 @@ public class MessageManager {
                                 }
                                 arrayList.add(new UserMessage(id, name, content, phone, false, status));
 
-                                if (context != null) {
-                                    arrayAdapter = new ArrayAdapter<UserMessage>(context, android.R.layout.simple_list_item_1, arrayList);
-                                    arrayAdapter.notifyDataSetChanged();
-                                }
                             }
+
 
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        listView.setAdapter(arrayAdapter);
+
                     }
 
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
 
-                Toast.makeText(context, "Server Timeout, Xui lòng thử lại!", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(context, "Server Timeout, Xui lòng thử lại!", Toast.LENGTH_SHORT).show();
                 Log.d("response", error.toString());
             }
         })
@@ -95,31 +93,4 @@ public class MessageManager {
 
     }
 
-    public void updateData(final Context context, final String id) {
-
-
-        RequestQueue requestQueue = Volley.newRequestQueue(context);
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, LINK + "update?uuid=" + id, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                //  Toast.makeText(getApplicationContext(), "Server: " + response, Toast.LENGTH_SHORT).show();
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(context, "Server Error: " + error, Toast.LENGTH_SHORT).show();
-            }
-        }) {
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<String, String>();
-                //headers.put("Content-Type", "application/json");
-                headers.put("Authorization", "Bearer 123456789");
-                return headers;
-            }
-        };
-        requestQueue.add(stringRequest);
-
-    }
 }

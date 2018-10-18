@@ -5,26 +5,25 @@ import java.io.Serializable;
 public class UserMessage implements Serializable {
 
     private String id;
-    private String userName;
-    private String userMessage;
-    private String userPhone;
-    private String inActive;
+    private String Name;
+    private String Message;
+    private String Phone;
+    private String Active;
 
     public UserMessage(String id, String userName, String UserMessage, String UserPhone, String inactive) {
         this.id = id;
-        this.userName = userName;
-        this.userMessage = UserMessage;
-        this.userPhone = UserPhone;
-        this.inActive = inactive;
+        this.Name = userName;
+        this.Message = UserMessage;
+        this.Phone = UserPhone;
+        this.Active = inactive;
     }
 
     public UserMessage(String id, String userName, String UserMessage, String UserPhone, boolean active, String inactive) {
         this.id = id;
-        this.userName = userName;
-        this.userMessage = UserMessage;
-        this.userPhone = UserPhone;
-        this.active = active;
-        this.inActive = inactive;
+        this.Name = userName;
+        this.Message = UserMessage;
+        this.Phone = UserPhone;
+        this.Active = inactive;
     }
 
 
@@ -37,46 +36,46 @@ public class UserMessage implements Serializable {
     }
 
     public String getInActive() {
-        return inActive;
+        return Active;
     }
 
     public void setInActive(String inActive) {
-        this.inActive = inActive;
+        this.Active = inActive;
     }
 
     private boolean active;
 
 
     public String getUserMessage() {
-        return userMessage;
+        return Message;
     }
 
     public void setUserMessage(String UserMessage) {
-        this.userMessage = UserMessage;
+        this.Message = UserMessage;
     }
 
     public String getUserName() {
-        return userName;
+        return Name;
     }
 
     public void setUserName(String userName) {
-        this.userName = userName;
+        this.Name = userName;
     }
 
 
     public String getUserPhone() {
-        return userPhone;
+        return Phone;
     }
 
     public void setUserPhone(String userPhone) {
-        this.userPhone = userPhone;
+        this.Phone = userPhone;
     }
 
     @Override
     public String toString() {
-        return this.userName + " (" + this.userPhone + ")" + "\n" +
-                this.userMessage + "\n" +
-                this.inActive;
+        return this.Name + " (" + this.Phone + ")" + "\n" +
+                this.Message + "\n" +
+                this.Active;
 
     }
 

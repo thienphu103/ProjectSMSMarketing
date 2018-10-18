@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <ListPreference
+        android:title="Chọn Server"
+        android:summary="Chọn Server để lấy dữ liệu"
+        android:key="pref_list"
+        android:defaultValue="1"
+        android:entries="@array/listArray"
+        android:entryValues="@array/listValues" />
+    <EditTextPreference
+        android:key="pref_edittext"
+        android:title="Thời gian gủi tin nhắn"
+        android:dialogTitle="Thời gian"
+        android:summary="không dưới 300s"
+        android:inputType="number"
+
+        android:defaultValue="500" />
+    <CheckBoxPreference
+        android:key="pref_sync"
+        android:title="Cho phép gủi tin nhắn tự động"
+        android:summary="tự động chạy nền và gủi tin"
+        android:defaultValue="true" />
+    <CheckBoxPreference
+        android:key="pref_sync"
+        android:title="Text App"
+        android:summary="do not send SMS"
+        android:defaultValue="true" />
+
+</PreferenceScreen>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    tools:context=".Activity.MainActivity">
+<TextView
+    android:id="@+id/txt_tilte"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="50dp"
+    android:textColor="@android:color/black"
+    android:textStyle="bold"
+    android:textSize="30sp"
+    android:layout_centerHorizontal="true"
+    android:text="App Demo SMS Marketing"/>
+    <Button
+        android:layout_below="@id/txt_tilte"
+        android:id="@+id/btnListMessage"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:text="List and Send"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        android:background="@android:color/holo_blue_light"/>
+
+    <Button
+        android:layout_below="@+id/btnListMessage"
+        android:id="@+id/btnSetting"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:text="Setting"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        android:background="@android:color/holo_blue_light"/>
+
+    <Button
+        android:layout_below="@+id/btnSetting"
+        android:id="@+id/btnLog"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:text="Log"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        android:background="@android:color/holo_blue_light"/>
+
+
+
+</RelativeLayout>

@@ -1,10 +1,10 @@
-package com.example.a.projectcompanyhdexpertiser.Class;
+package com.example.a.projectcompanyhdexpertiser.Controller;
 
 import android.content.Context;
 import android.telephony.SmsManager;
 import android.widget.Toast;
 
-public class SMSMailer  {
+public class SMSMailer {
     public void sendSMS(final Context context, String phone, String message) {
 
         try {

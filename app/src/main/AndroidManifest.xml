@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.SEND_SMS" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -19,6 +20,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".Activity.SettingActivity" />
+        <activity android:name=".Activity.ListMessageActivity" />
+        <activity android:name=".Activity.LogActivity" />
+
+        <service
+            android:name=".Service.SMSService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>
