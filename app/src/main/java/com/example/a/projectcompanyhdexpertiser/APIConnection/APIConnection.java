@@ -1,4 +1,4 @@
-package com.example.a.projectcompanyhdexpertiser.APIConnect;
+package com.example.a.projectcompanyhdexpertiser.APIConnection;
 
 public class APIConnection {
     public static String LINK="http://192.168.1.53:8181/api/8.0/system/";

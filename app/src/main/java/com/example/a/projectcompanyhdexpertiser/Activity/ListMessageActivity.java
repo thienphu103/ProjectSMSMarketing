@@ -19,7 +19,7 @@ import android.widget.Toast;
 
 import com.example.a.projectcompanyhdexpertiser.Controller.MessageManager;
 import com.example.a.projectcompanyhdexpertiser.Controller.SMSMailer;
-import com.example.a.projectcompanyhdexpertiser.Controller.WriteAndReadFile;
+import com.example.a.projectcompanyhdexpertiser.Controller.FileStreamManager;
 import com.example.a.projectcompanyhdexpertiser.Model.UserMessage;
 import com.example.a.projectcompanyhdexpertiser.R;
 import com.example.a.projectcompanyhdexpertiser.Service.SMSService;
@@ -28,7 +28,6 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Timer;
-import java.util.TimerTask;
 
 public class ListMessageActivity extends AppCompatActivity {
     public static final String TAG = "ListViewExample";
@@ -40,6 +39,7 @@ public class ListMessageActivity extends AppCompatActivity {
     MessageManager messageManager = new MessageManager();
     SMSMailer smsMailer = new SMSMailer();
     SharedPreferences pre;
+    SharedPreferences prefs;
     SharedPreferences.Editor editor;
     Timer myTimer;
     private String MILLISECOND_TIME;
@@ -56,7 +56,7 @@ public class ListMessageActivity extends AppCompatActivity {
     }
 
     private void initController() {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ListMessageActivity.this);
+        prefs = PreferenceManager.getDefaultSharedPreferences(ListMessageActivity.this);
         MILLISECOND_TIME = prefs.getString("pref_edittext", "");
         pre = getSharedPreferences("STATUS", Context.MODE_PRIVATE);
         editor = pre.edit();
@@ -124,12 +124,15 @@ public class ListMessageActivity extends AppCompatActivity {
             users[0] = user.getUserName();
             phone[0] = user.getUserPhone();
             message[0] = user.getUserMessage();
-            // smsMailer.sendSMS(getApplicationContext(), phone[0], message[0]);
+            if(prefs.getBoolean("pref_sms", false)==false){
+                smsMailer.sendSMS(getApplicationContext(), phone[0], message[0]);
+            }
             messageManager.updateData(id[0]);
             sb[0] = sb[0].append("\n " + "ID: " + id[0] + "\nTên: " + users[0] + " - Phone: " + phone[0] + "\n------------\n");
             Log.d("Process", DateFormat.getDateTimeInstance().format(new Date()) + ": SMS Send Activity");
-            WriteAndReadFile writeAndReadFile = new WriteAndReadFile();
-            writeAndReadFile.writeToFile("log.txt", "\n" + DateFormat.getDateTimeInstance().format(new Date()) + ": SMS Send Activity\n", ListMessageActivity.this);
+            FileStreamManager writeAndReadFile = new FileStreamManager();
+            writeAndReadFile.setContext(ListMessageActivity.this);
+            writeAndReadFile.writeToFile("log.txt", "\n" + DateFormat.getDateTimeInstance().format(new Date()) + ": SMS Send Activity\n");
 
 
         }
@@ -137,30 +140,38 @@ public class ListMessageActivity extends AppCompatActivity {
     }
 
     public void AlertDialogChoose() {
+String check;
+if(prefs.getBoolean("pref_sms", false)==false){
+    check="Cho phép gủi tin nhắn SMS";
 
+}else{
+    check="Test App chạy API không gủi tin nhắn";
+}
         AlertDialog.Builder builder = new AlertDialog.Builder(ListMessageActivity.this);
-        builder.setTitle("Gủi Tin Nhắn Hàng Loạt với " + MILLISECOND_TIME + "s ?\n" + "Trạng Thái: " + pre.getString("status", ""));
-        builder.setMessage("Bạn có chắc không?");
+        builder.setTitle("Gủi Tin Nhắn Hàng Loạt với " + MILLISECOND_TIME + "s ?\n");
+        builder.setMessage("Bạn có chắc không?"+"\n"+
+                "Trạng Thái: " + pre.getString("status", "")+"\n"+check);
         builder.setCancelable(false);
-        builder.setPositiveButton("Chạy Bình Thường", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                btnSend.setBackgroundColor(Color.RED);
-                btnSend.setText("STOP");
-                editor.clear();
-                editor.putString("status", "Running");
-                editor.commit();
-                myTimer = new Timer();
-                myTimer.scheduleAtFixedRate(new TimerTask() {
-                    @Override
-                    public void run() {
-                        SendAllSMSMessage();
-                    }
-                }, 0, Integer.parseInt(MILLISECOND_TIME));
-                messageManager.getData();
-            }
-        });
-        builder.setNegativeButton("Chạy Nền", new DialogInterface.OnClickListener() {
+//        builder.setPositiveButton("Chạy Bình Thường", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialogInterface, int i) {
+//                btnSend.setBackgroundColor(Color.RED);
+//                btnSend.setText("STOP");
+//                editor.clear();
+//                editor.putString("status", "Running");
+//                editor.commit();
+//                myTimer = new Timer();
+//                myTimer.scheduleAtFixedRate(new TimerTask() {
+//                    @Override
+//                    public void run() {
+//
+//                        SendAllSMSMessage();
+//                    }
+//                }, 0, Integer.parseInt(MILLISECOND_TIME));
+//                messageManager.getData();
+//            }
+//        });
+        builder.setNegativeButton("Run", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 btnSend.setBackgroundColor(Color.RED);
@@ -206,9 +217,6 @@ public class ListMessageActivity extends AppCompatActivity {
                 editor.clear();
                 editor.putString("status", "Stand");
                 editor.commit();
-                if (!(myTimer == null)) {
-                    myTimer.cancel();
-                }
                 stopService(new Intent(getApplicationContext(), SMSService.class));
                 dialogInterface.dismiss();
 

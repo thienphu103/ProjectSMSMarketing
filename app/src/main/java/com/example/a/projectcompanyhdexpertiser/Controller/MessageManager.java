@@ -22,8 +22,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.example.a.projectcompanyhdexpertiser.APIConnect.APIConnection.HOST;
-import static com.example.a.projectcompanyhdexpertiser.APIConnect.APIConnection.PATH;
+import static com.example.a.projectcompanyhdexpertiser.APIConnection.APIConnection.HOST;
+import static com.example.a.projectcompanyhdexpertiser.APIConnection.APIConnection.PATH;
 
 
 public class MessageManager {
@@ -32,6 +32,7 @@ public class MessageManager {
     public ArrayAdapter<UserMessage> arrayAdapter;
     public Context context;
     public ListView listView;
+    private RequestQueue requestQueue;
 
     public void setListView(ListView listView) {
         this.listView = listView;
@@ -43,7 +44,10 @@ public class MessageManager {
     }
 
     public void getData() {
-        final RequestQueue requestQueue = Volley.newRequestQueue(context);
+
+            if (requestQueue == null) {
+                requestQueue = Volley.newRequestQueue(context);
+            }
         final StringRequest stringRequest = new StringRequest(Request.Method.GET, HOST+PATH + "message",
                 new Response.Listener<String>() {
                     @Override

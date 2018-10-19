@@ -15,7 +15,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.a.projectcompanyhdexpertiser.Controller.WriteAndReadFile;
+import com.example.a.projectcompanyhdexpertiser.Controller.SMSMailer;
+import com.example.a.projectcompanyhdexpertiser.Controller.FileStreamManager;
 import com.example.a.projectcompanyhdexpertiser.Model.UserMessage;
 
 import org.json.JSONArray;
@@ -28,19 +29,19 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
-import java.util.TimerTask;
 
-import static com.example.a.projectcompanyhdexpertiser.APIConnect.APIConnection.HOST;
-import static com.example.a.projectcompanyhdexpertiser.APIConnect.APIConnection.PATH;
+import static com.example.a.projectcompanyhdexpertiser.APIConnection.APIConnection.HOST;
+import static com.example.a.projectcompanyhdexpertiser.APIConnection.APIConnection.PATH;
 
 public class SMSService extends Service {
 
     private ArrayList<UserMessage> arrayList;
-    WriteAndReadFile writeAndReadFile;
+    FileStreamManager writeAndReadFile;
     private Timer timer = new Timer();
     private String MILLISECOND_TIME;
-
-
+    SharedPreferences prefs;
+    private RequestQueue requestQueue;
+   public boolean Running = false;
     public SMSService() {
     }
 
@@ -62,18 +63,33 @@ public class SMSService extends Service {
     }
 
     private void initEvent() {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(SMSService.this);
+        prefs = PreferenceManager.getDefaultSharedPreferences(SMSService.this);
         MILLISECOND_TIME = prefs.getString("pref_edittext", "");
-        timer.scheduleAtFixedRate(new TimerTask() {
+
+        final Thread thread = new Thread() {
+
             @Override
             public void run() {
-                getData();
+                Running=true;
+                try {
+                    while (Running) {
+                        Thread.sleep(Integer.parseInt(MILLISECOND_TIME)*1000);
+                        getData();
+                    }
+                } catch (InterruptedException e) {
+                }
             }
-        }, 0, Integer.parseInt(MILLISECOND_TIME));//5 Minutes
+        };
+
+        thread.start();
+
     }
 
     public void getData() {
-        final RequestQueue requestQueue = Volley.newRequestQueue(SMSService.this);
+        if (requestQueue == null) {
+            requestQueue = Volley.newRequestQueue(SMSService.this);
+        }
+
         final StringRequest stringRequest = new StringRequest(Request.Method.GET, HOST + PATH + "message",
                 new Response.Listener<String>() {
                     @Override
@@ -115,13 +131,17 @@ public class SMSService extends Service {
                                 users1 = arrayList.get(i).getUserName();
                                 phone1 = arrayList.get(i).getUserPhone();
                                 message1 = arrayList.get(i).getUserMessage();
-                                // smsMailer.sendSMS(getApplicationContext(), phone[0], message[0]);
+                                SMSMailer smsMailer=new SMSMailer();
+                                if(prefs.getBoolean("pref_sms", false)==false){
+                                    smsMailer.sendSMS(getApplicationContext(), phone1, message1);
+                                }
                                 updateData(id1);
                                 sb[0] = sb[0].append("\n " + "ID: " + id1 + "\nTên: " + users1 + " - Phone: " + phone1 + "\n------------\n");
                                 if (i == (arrayList.size() - 1)) {
                                     Log.d("Process", DateFormat.getDateTimeInstance().format(new Date()) + ": SMS Send Service");
-                                    writeAndReadFile = new WriteAndReadFile();
-                                    writeAndReadFile.writeToFile("log.txt", "\n" + DateFormat.getDateTimeInstance().format(new Date()) + ": SMS Send Service\n", SMSService.this);
+                                    writeAndReadFile = new FileStreamManager();
+                                    writeAndReadFile.setContext(SMSService.this);
+                                    writeAndReadFile.writeToFile("log.txt", "\n" + DateFormat.getDateTimeInstance().format(new Date()) + ": SMS Send Service\n");
                                 }
 
 
@@ -156,9 +176,10 @@ public class SMSService extends Service {
     }
 
     public void updateData(final String id) {
+        if (requestQueue == null) {
+            RequestQueue requestQueue = Volley.newRequestQueue(SMSService.this);
+        }
 
-
-        RequestQueue requestQueue = Volley.newRequestQueue(SMSService.this);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, HOST + PATH + "update?uuid=" + id, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -187,8 +208,8 @@ public class SMSService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Running =false;
         Toast.makeText(this, "Stop Service", Toast.LENGTH_SHORT).show();
-        timer.cancel();
 
     }
 

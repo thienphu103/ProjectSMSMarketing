@@ -10,8 +10,14 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 
-public class WriteAndReadFile {
-    public void writeToFile(String filename,String data, Context context) {
+public class FileStreamManager {
+    Context context;
+
+    public void setContext(Context context) {
+        this.context = context;
+    }
+
+    public void writeToFile(String filename, String data) {
         try {
             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput(filename, Context.MODE_APPEND));
             outputStreamWriter.write(data);
@@ -20,7 +26,7 @@ public class WriteAndReadFile {
             Log.e("Exception", "File write failed: " + e.toString());
         }
     }
-    public void writeToFileOverride(String filename,String data, Context context) {
+    public void writeToFileOverride(String filename,String data) {
         try {
             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput(filename, Context.MODE_PRIVATE));
             outputStreamWriter.write(data);
@@ -30,7 +36,7 @@ public class WriteAndReadFile {
         }
     }
 
-    public String readFromFile(String filename, Context context) {
+    public String readFromFile(String filename) {
 
         String ret = "";
 
